@@ -3,6 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';  
+
 import 'package:notus/notus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -582,4 +584,78 @@ class _LinkView extends StatelessWidget {
     }
     return widget;
   }
+}
+
+  
+class ColorButton extends StatefulWidget {  
+  const ColorButton({Key key}) : super(key: key); 
+  @override 
+  _ColorButtonState createState() => _ColorButtonState(); 
+} 
+class _ColorButtonState extends State<ColorButton> {  
+  Key _inputKey;  
+  bool get isEditing => _inputKey != null;  
+  Color currentColor = Colors.black;  
+  TextSelection selection;  
+  @override 
+  Widget build(BuildContext context) {  
+    final toolbar = ZefyrToolbar.of(context); 
+    return toolbar.buildButton(context, ZefyrToolbarAction.fontColor, 
+        onPressed: openColorPicker);  
+  } 
+  void changeColor(Color color) { 
+    currentColor = color; 
+  } 
+  void openColorPicker() {  
+    final toolbar = ZefyrToolbar.of(context); 
+    selection = toolbar.editor.selection; 
+    try { 
+      final color = toolbar.editor.selectionStyle 
+          .get(NotusAttribute.fontColor)  
+          .value  
+          .replaceAll('#', '0xff'); 
+      currentColor = Color(int.parse(color)); 
+    } catch (_) {}  
+    showDialog( 
+        context: context, 
+        builder: (BuildContext context) { 
+          return AlertDialog( 
+            titlePadding: const EdgeInsets.all(0.0),  
+            contentPadding: const EdgeInsets.all(0.0),  
+            content: SingleChildScrollView( 
+              child: ColorPicker( 
+                pickerColor: currentColor,  
+                onColorChanged: changeColor,  
+                colorPickerWidth: 300.0,  
+                pickerAreaHeightPercent: 0.7, 
+                enableAlpha: true,  
+                displayThumbColor: true,  
+                showLabel: true,  
+                paletteType: PaletteType.hsv, 
+                pickerAreaBorderRadius: const BorderRadius.only(  
+                  topLeft: const Radius.circular(2.0),  
+                  topRight: const Radius.circular(2.0), 
+                ),  
+              ),  
+            ),  
+            actions: <Widget>[  
+              FlatButton( 
+                child: Text('Apply'), 
+                onPressed: doneEdit,  
+              ),  
+            ],  
+          );  
+        }); 
+  } 
+  void doneEdit() { 
+    final toolbar = ZefyrToolbar.of(context); 
+    toolbar.editor.updateSelection(selection);  
+    toolbar.editor.formatSelection(NotusAttribute.fontColor 
+        .fromString('#${currentColor.value.toRadixString(16)}')); 
+    final attrs = toolbar.editor.selectionStyle;  
+    attrs.value(NotusAttribute.fontColor);  
+    // toolbar.markNeedsRebuild();  
+    Navigator.of(context).pop();  
+  } 
+  void cancelEdit() {}  
 }
