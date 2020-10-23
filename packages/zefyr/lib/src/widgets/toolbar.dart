@@ -17,6 +17,7 @@ enum ZefyrToolbarAction {
   italic,
   link,
   unlink,
+  fontColor,
   clipboardCopy,
   openInBrowser,
   heading,
@@ -39,6 +40,7 @@ enum ZefyrToolbarAction {
 final kZefyrToolbarAttributeActions = <ZefyrToolbarAction, NotusAttributeKey>{
   ZefyrToolbarAction.bold: NotusAttribute.bold,
   ZefyrToolbarAction.italic: NotusAttribute.italic,
+  ZefyrToolbarAction.fontColor: NotusAttribute.fontColor,
   ZefyrToolbarAction.link: NotusAttribute.link,
   ZefyrToolbarAction.heading: NotusAttribute.heading,
   ZefyrToolbarAction.headingLevel1: NotusAttribute.heading.level1,
@@ -102,7 +104,7 @@ class ZefyrToolbar extends StatefulWidget implements PreferredSizeWidget {
   const ZefyrToolbar({
     Key key,
     @required this.editor,
-    this.autoHide = true,
+    this.autoHide = false,
     this.delegate,
   }) : super(key: key);
 
@@ -252,6 +254,7 @@ class ZefyrToolbarState extends State<ZefyrToolbar>
     final buttons = <Widget>[
       buildButton(context, ZefyrToolbarAction.bold),
       buildButton(context, ZefyrToolbarAction.italic),
+      ColorButton(),
       LinkButton(),
       HeadingButton(),
       buildButton(context, ZefyrToolbarAction.bulletList),
@@ -337,6 +340,7 @@ class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
   static const kDefaultButtonIcons = {
     ZefyrToolbarAction.bold: Icons.format_bold,
     ZefyrToolbarAction.italic: Icons.format_italic,
+    ZefyrToolbarAction.fontColor: Icons.format_color_text,
     ZefyrToolbarAction.link: Icons.link,
     ZefyrToolbarAction.unlink: Icons.link_off,
     ZefyrToolbarAction.clipboardCopy: Icons.content_copy,

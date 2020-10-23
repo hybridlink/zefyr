@@ -164,13 +164,17 @@ class ZefyrController extends ChangeNotifier {
   void formatText(int index, int length, NotusAttribute attribute) {
     final change = document.format(index, length, attribute);
     _lastChangeSource = ChangeSource.local;
-
-    if (length == 0 &&
-        (attribute.key == NotusAttribute.bold.key ||
-            attribute.key == NotusAttribute.italic.key)) {
-      // Add the attribute to our toggledStyle. It will be used later upon insertion.
-      _toggledStyles = toggledStyles.put(attribute);
-    }
+	
+    if (length == 0 &&	
+        (attribute.key == NotusAttribute.bold.key ||	
+            attribute.key == NotusAttribute.italic.key )) {	
+      // Add the attribute to our toggledStyle. It will be used later upon insertion.	
+            _toggledStyles = toggledStyles.put(attribute);	
+    }	
+	
+    if(attribute.key == NotusAttribute.fontColor.key) {	
+      _toggledStyles = toggledStyles.put(attribute);	
+    }	
 
     // Transform selection against the composed change and give priority to
     // the change. This is needed in cases when format operation actually

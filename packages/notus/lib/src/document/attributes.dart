@@ -74,6 +74,7 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   static final Map<String, NotusAttributeBuilder> _registry = {
     NotusAttribute.bold.key: NotusAttribute.bold,
     NotusAttribute.italic.key: NotusAttribute.italic,
+    NotusAttribute.fontColor.key: NotusAttribute.fontColor,
     NotusAttribute.link.key: NotusAttribute.link,
     NotusAttribute.heading.key: NotusAttribute.heading,
     NotusAttribute.block.key: NotusAttribute.block,
@@ -87,6 +88,9 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
 
   /// Italic style attribute.
   static const italic = _ItalicAttribute();
+
+  // Font Color style attribute.
+  static const fontColor = FontColorAttributeBuilder._();
 
   /// Link style attribute.
   // ignore: const_eval_throws_exception
@@ -330,6 +334,14 @@ class _BoldAttribute extends NotusAttribute<bool> {
 /// Applies italic style to a text segment.
 class _ItalicAttribute extends NotusAttribute<bool> {
   const _ItalicAttribute() : super._('i', NotusAttributeScope.inline, true);
+}
+
+class FontColorAttributeBuilder extends NotusAttributeBuilder<String> {
+  static const _color = 'c';
+  const FontColorAttributeBuilder._() : super._(_color, NotusAttributeScope.inline);
+
+  NotusAttribute<String> fromString(String value) =>
+      NotusAttribute<String>._(key, scope, value);
 }
 
 /// Builder for link attribute values.
